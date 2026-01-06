@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: heart-disease-api-service
+  labels:
+    app: heart-disease-api
+spec:
+  type: LoadBalancer  # Change to NodePort for Minikube/Docker Desktop
+  selector:
+    app: heart-disease-api
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80        # External port
+    targetPort: 8000  # Container port
+  sessionAffinity: None
+---
+# Alternative Ingress configuration (uncomment if using Ingress instead of LoadBalancer)
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: heart-disease-api-ingress
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /
+#     cert-manager.io/cluster-issuer: "letsencrypt-prod"  # If using HTTPS
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - host: heart-disease-api.example.com  # Replace with your domain
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: heart-disease-api-service
+#             port:
+#               number: 80
+#   # Uncomment for HTTPS
+#   # tls:
+#   # - hosts:
+#   #   - heart-disease-api.example.com
+#   #   secretName: heart-disease-api-tls
